@@ -1,0 +1,14 @@
+\section{Related work}
+\label{sec:related}
+
+\paragraph{Refusal in quantized models.}
+Audits of quantized chat models report effects whose sign differs between models and methods \citep{hong2024decoding, kharinaev2025investigating, kadadekar2026quality, prasad2026temperature, wu2026decisions}. The largest covers 66 quantized variants with human evaluation and finds no method consistently safest \citep{kharinaev2025investigating}. In one audit, large drops in refusal came from AWQ, GPTQ and 2--3-bit formats, while GGUF Q4\_K\_M changed it by under 3 points \citep{kadadekar2026quality}. Quantization can also be attacked, so that a model behaves well at full precision and badly once quantized \citep{egashira2024exploiting, egashira2025gguf}. None of these studies perturbs the weights by a matched non-quantization error, and none applies prefill to a quantized model.
+
+\paragraph{Quantization as perturbation.}
+\citet{gong2024perturbation} treat quantization as noise on weights and activations and compare it with artificial perturbations of matched L2 norm. For general performance, they find that the two agree in some model families and differ in others. We ask the same question about refusal, and add controls built from the real error (its mirror image, shuffles and scaled copies), which separate its pattern and sign from its size. \citet{razan2026firstorder} model 4-bit error as isotropic noise to predict which refusals flip, and find that the refusals held most weakly are the ones that break. Random weight perturbations leave a model's average safety intact within a basin around it \citep{peng2024safety}.
+
+\paragraph{Instability of single labels.}
+Quantized models flip individual answers while accuracy stays flat, and Gaussian weight noise reproduces these flips \citep{dutta2024accuracy}. Safety judgments flip across seeds and temperatures \citep{larsen2025instability, prasad2026temperature}, attack success rates vary from run to run \citep{greatpretender2026}, and noise injected into weights or activations makes models more compliant \citep{shahani2025noise}. We treat this instability as a baseline and define our estimand with it in mind (\S\ref{sec:instrument}).
+
+\paragraph{Prefill and shallow alignment.}
+Refusal is concentrated in the first few tokens of a reply \citep{qi2024shallow} and is mediated by a single direction in the residual stream \citep{arditi2024refusal}. Prefilling a compliant start bypasses it in full-precision open models \citep{qi2024shallow, struppek2026prefill}. We apply the same prefill test to quantized copies.

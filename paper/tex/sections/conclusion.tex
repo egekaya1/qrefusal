@@ -1,0 +1,5 @@
+\section{Conclusion}
+Quantizing these chat models to 4 bits did not change refusal in one direction. \qwen{} became more likely to continue a compliant reply that was started for it, \llama{} became less compliant with jailbreak prompts and with benign prompts in the same style, and \qwenthree{} showed no significant shift. Matched random perturbations moved the models in both directions and averaged close to zero, while each shift had the sign of the real rounding error and grew with its scale over the tested range. Because each build carries its own rounding error, audits of different builds can disagree even about the same model.
+
+\paragraph{What a practitioner can do.}
+Where memory allows, use 8 bits: no 8-bit build shifted a rate significantly after correction. At 4 bits, a finer group size and the mixed 4/6 recipe did not remove \qwen's shift, and the half-size \llama{} build shows that a likelihood check can miss one. Q4\_K\_M shifted neither model, but we found no property that predicts which builds shift, so each build should be evaluated against its original on paired prompts.

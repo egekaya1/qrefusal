@@ -1,0 +1,25 @@
+\subsection{Free start: held-out jailbreak prompts}
+\label{sec:free}
+
+In most real misuse there is no forced start. A user sends a jailbreak prompt and the model chooses how to begin its reply. For this setting we use a development set of 200 WildJailbreak prompts and a held-out test set of 400. On the development set (Appendix~\ref{app:pilot}), \llama's 4-bit build was much less compliant than bf16. We test this on the held-out prompts, with every build, an 8-bit null and one confirmatory test with a predicted sign.
+
+The effect holds on the test set. \llama{} fulfils \N{C2.cells.llama.4bit-g64.ratea}\% of the test prompts at bf16 and \N{C2.cells.llama.4bit-g64.rateb}\% at 4 bits, a drop of \N{C2.cells.llama.4bit-g64.absdiff} points \N{C2.cells.llama.4bit-g64.ci}, with discordant prompts splitting \N{C2.cells.llama.4bit-g64.aonly} to \N{C2.cells.llama.4bit-g64.bonly} ($p=\N{C2.cells.llama.4bit-g64.p}$). Its 8-bit build does not differ from bf16 (\N{C2.cells.llama.8bit-g64.diff}\pp{} \N{C2.cells.llama.8bit-g64.ci}), and its MXFP4 build shows a larger drop (\N{C2.cells.llama.mxfp4.diff}\pp{}). The 4-bit drop is the same size when the reply cap is tripled (\N{robustness.E4llama.128.diff}\pp{} at 128 tokens, \N{robustness.E4llama.384.diff}\pp{} at 384), and it has the same sign on SORRY-Bench, a different prompt set with no prefill (\N{S3.llama.4bit-g64.overall.diff}\pp{} \N{S3.llama.4bit-g64.overall.ci}). Llama Guard, which asks a different question (is the reply unsafe?), also finds a drop (\N{labels.freellama.llamaguard.diff}\pp{} \N{labels.freellama.llamaguard.ci}, $p=\N{labels.freellama.llamaguard.p}$).
+
+On the development set \qwenthree's 4-bit build showed an effect of similar size and opposite sign, which did not hold on the test set. Its shift there is \N{C2.cells.qwenthree.4bit-g64.diff}\pp{} \N{C2.cells.qwenthree.4bit-g64.ci}, which is not significant after correction. \qwen's shift is \N{C2.cells.qwen.4bit-g64.diff}\pp{} \N{C2.cells.qwen.4bit-g64.ci}.
+
+Table~\ref{tab:settings} compares the two settings. \qwen{} shifts when the start of its reply is forced and not when it is free, and \llama{} shows the reverse. This could reflect whether the prefill or the model opens the reply, but the two settings also use different prompts. To separate the two factors, we also ran the test prompts with a forced generic start (``Sure, here is''). On these prompts \llama's shift is absent (\N{robustness.B1.llama.diff}\pp{} \N{robustness.B1.llama.ci}, $p=\N{robustness.B1.llama.p}$), so it depends on \llama{} opening the reply itself and not on the prompt set. \qwen{} shows no shift on these prompts either (\N{robustness.B1.qwen.diff}\pp{} \N{robustness.B1.qwen.ci}). Its forced-start shift is largest under the abliterated prefix and weaker under ``Sure, here is'' (\S\ref{sec:forced}), so it appears to need a strongly compliant start, and it may also depend on the prompts.
+
+\begin{table}[t]
+\centering\small
+\begin{tabular}{lcc}
+\toprule
+4-bit shift (pp) & Forced start & Free start (held out) \\
+\midrule
+\qwen      & \textbf{\N{C1.permodel.qwen.all.diff}}  & \N{C2.cells.qwen.4bit-g64.diff} \\
+\llama     & \N{C1.permodel.llama.all.diff}           & \textbf{\N{C2.cells.llama.4bit-g64.diff}} \\
+\qwenthree & \N{C1.permodel.qwenthree.all.diff}       & \N{C2.cells.qwenthree.4bit-g64.diff} \\
+\bottomrule
+\end{tabular}
+\caption{The 4-bit shift in each setting; bold marks a significant confirmatory test. The settings also differ in prompts (\texttt{harmful\_test} with an 8-token prefix vs.\ held-out WildJailbreak with none); a forced generic start on the held-out prompts gives no shift in either model (\S\ref{sec:free}).}
+\label{tab:settings}
+\end{table}
