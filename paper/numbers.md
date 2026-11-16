@@ -188,7 +188,7 @@ Pilot (200 prompts, exploratory):
 | Build | Shift vs bf16 | 95% CI | Note |
 |---|---|---|---|
 | real 4bit-g64 | +6.2 | [+2.8, +9.8] |  |
-| dense W+E (n=150) | +0.7 | [-5.3, +6.7] | vs real: churn 12.0% |
+| dense W+E (n=562) | +4.8 | [+1.2, +8.4] | vs real: churn 12.1% |
 | e2-mirror | -3.0 | [-6.0, +0.0] | NLL gap +0.1305 |
 | e2-perm1 | +2.7 | [-0.9, +6.2] | NLL gap +0.1662 |
 | e2-perm2 | -1.8 | [-4.8, +1.2] | NLL gap +0.1803 |
@@ -208,7 +208,7 @@ six draws (addendum 5): random-control +0.4 [-2.1, +2.8]; mirror -3.0 [-6.0, +0.
 | Build | Shift vs bf16 | 95% CI | Note |
 |---|---|---|---|
 | real 4bit-g64 | -10.3 | [-14.2, -6.2] |  |
-| dense W+E (n=150) | -12.0 | [-18.7, -5.3] | vs real: churn 4.0% |
+| dense W+E (n=400) | -10.7 | [-14.8, -7.0] | vs real: churn 4.0% |
 | e2-mirror | +3.7 | [-0.2, +7.8] | NLL gap +0.0608 |
 | e2-perm1 | -7.3 | [-11.5, -3.0] | NLL gap +0.0673 |
 | e2-perm2 | -1.0 | [-5.0, +3.2] | NLL gap +0.0664 |

@@ -994,7 +994,7 @@ def appendix_tables():
                   else f"{x['norm_ratio_min']:.3f}--{x['norm_ratio_max']:.3f}")
             sh = C3[tag].get(b) or (C3[tag].get("dense") if b == "e2-dense" else None)
             sh_s = f"{_pp(sh['diff'])} {_ci(sh['ci95'])}" if sh and "ci95" in sh else "pending"
-            lab = {"e2-dense": r"dense $W+E$\textsuperscript{a}", "e2-mirror": r"mirror $W-E$", "e2-scale0.5": r"$W+\tfrac12E$",
+            lab = {"e2-dense": r"dense $W+E$", "e2-mirror": r"mirror $W-E$", "e2-scale0.5": r"$W+\tfrac12E$",
                    "e2-scale2": r"$W+2E$", "e2-perm1": "permuted 1", "e2-perm2": "permuted 2", "e2-perm3": "permuted 3",
                    "e2-gauss": "Gaussian 1", "e2-gauss2": "Gaussian 2", "e2-gauss3": "Gaussian 3"}[b]
             body.append(f" & {lab} & {x['nll_gap']:+.3f} & {nr} & {sh_s} \\\\")

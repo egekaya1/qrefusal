@@ -24,6 +24,7 @@ Nov 14 & other quantizers, dose, refusal direction, GGUF; six random draws; same
 \item \emph{Seed floor:} one sampler for both models (T 0.7, top-$p$ 0.8, top-$k$ 20); not run for \qwenthree.
 \item \emph{Length check} on a fixed random subset of 150 prompts.
 \item \emph{SORRY-Bench} intervals are clustered over its 120 questions.
+\item \emph{Dense $W+E$} was registered on the first 150 prompts of each cell and run on all of them.
 \end{itemize}
 
 \paragraph{GPTQ.} \qwen's GPTQ build loses \N{cap.qwen.gptq.dnll} nats per token against bf16 (AWQ: \N{cap.qwen.awq.dnll}) and is excluded from every analysis. A build with 6-bit fallback layers (\N{cap.qwen.gptq6.bpw} bits per weight) is equally broken (\N{cap.qwen.gptq6.dnll}), so the failure lies in the GPTQ pass on this model. \llama's GPTQ build is sound (\N{cap.llama.gptq.dnll}) and is reported.
@@ -120,7 +121,7 @@ Before any judged run, the dense $W + E$ build had to match the real 4-bit build
 \begin{table*}[t]
 \centering\small
 \input{generated/tab_controls}
-\caption{Matched-perturbation builds. $\Delta$NLL is against bf16 on bf16's own harmless replies; the norm ratio is the realized perturbation norm over $\lVert E\rVert$, identical across matrices to the precision shown. \textsuperscript{a}Run on the first 150 prompts of each cell only.}
+\caption{Matched-perturbation builds. $\Delta$NLL is against bf16 on bf16's own harmless replies; the norm ratio is the realized perturbation norm over $\lVert E\rVert$, identical across matrices to the precision shown.}
 \label{tab:controls}
 \end{table*}
 
