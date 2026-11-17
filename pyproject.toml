@@ -3,7 +3,10 @@ name = "qrefusal"
 version = "0.1.0"
 description = "Is 4-bit quantization more than noise to a chat model's safety behaviour? Attributing behavioural shifts with matched perturbations (MLX)."
 requires-python = ">=3.10"
-dependencies = ["mlx==0.32.4", "mlx-lm==0.32.2", "numpy", "matplotlib"]
+license = {text = "MIT"}
+authors = [{name = "Ege Kaya"}]
+readme = "README.md"
+dependencies = ["mlx==0.32.4", "mlx-lm==0.32.2", "numpy", "scipy", "matplotlib"]
 
 [project.optional-dependencies]
 test = ["pytest", "scipy"]
@@ -11,3 +14,6 @@ gguf = ["torch", "transformers", "sentencepiece"]  # only for the llama.cpp conv
 
 [tool.setuptools]
 packages = ["qrefusal"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

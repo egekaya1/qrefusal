@@ -17,7 +17,7 @@ Our scope is narrow: three small models, greedy decoding, and 4-bit builds from 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/forest.pdf}
-\caption{Shift in judged harmful output (A) or fulfilment (B) relative to bf16, with 95\% paired bootstrap intervals. The shaded band is the $\pm$5\pp{} equivalence margin. Filled markers are confirmatory tests. Blue circles are shipped builds, and orange squares are matched-perturbation controls built from the 4-bit rounding error (\S\ref{sec:controls}). The intervals of all 8-bit builds include zero. \qwen's affine 4-bit builds shift under a forced start, and \llama's 4-bit and MXFP4 builds shift under a free start.}
+\caption{Shift in judged harmful output (A) or fulfilment (B) relative to bf16, with 95\% paired bootstrap intervals. The shaded band is the $\pm$5\pp{} equivalence margin. Filled markers are confirmatory tests. Three of six random controls are shown (all six: Figure~\ref{fig:controls}). Blue circles are shipped builds, and orange squares are matched-perturbation controls built from the 4-bit rounding error (\S\ref{sec:controls}). The intervals of all 8-bit builds include zero. \qwen's affine 4-bit builds shift under a forced start, and \llama's 4-bit and MXFP4 builds shift under a free start.}
 \label{fig:forest}
 \end{figure*}
 

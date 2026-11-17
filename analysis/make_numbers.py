@@ -945,7 +945,7 @@ def appendix_tables():
             for fam, lab in (("xstest_safe", "XSTest safe"), ("wjb_benign", "WJB benign")):
                 r = B.get(m, {}).get(c, {}).get(fam)
                 if r:
-                    body.append(_cellrow(f"{TEXNAME[m]} & {TEXBUILD[c]}, {lab}", r))
+                    body.append(_cellrow(f"{TEXNAME[m]} & {TEXBUILD[c]}, {lab}", r, r.get("p_holm")))
         body.append(r"\addlinespace")
     _tex("tab_benign", head + body[:-1] + [r"\bottomrule", r"\end{tabular}"])
     # SORRY-Bench, cluster intervals

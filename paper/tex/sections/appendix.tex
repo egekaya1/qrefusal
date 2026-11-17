@@ -1,6 +1,6 @@
 \section{Pre-registration}
 \label{app:prereg}
-Each test was registered before the data it concerns (Table~\ref{tab:prereg}); the plan is \texttt{PREREG.md} in the repository.
+Each registered test was fixed before the data it concerns (Table~\ref{tab:prereg}). The plan is \texttt{PREREG.md} in the repository; it was kept as dated commits in a private development repository, not deposited with a public registry, and that history is available on request.
 
 \begin{table}[h]
 \centering\small
@@ -24,7 +24,10 @@ Nov 14 & other quantizers, dose, refusal direction, GGUF; six random draws; same
 \item \emph{Seed floor:} one sampler for both models (T 0.7, top-$p$ 0.8, top-$k$ 20); not run for \qwenthree.
 \item \emph{Length check} on a fixed random subset of 150 prompts.
 \item \emph{SORRY-Bench} intervals are clustered over its 120 questions.
-\item \emph{Dense $W+E$} was registered on the first 150 prompts of each cell and run on all of them.
+\item \emph{Dense $W+E$} was registered, and first run, on the first 150 prompts of each cell. There the \qwen{} dense build shifted by $+0.7$\pp{} against $+4.7$ for the real build (difference $-4.0$, $[-9.3, +1.3]$), which 150 prompts could not resolve, so we reran it on every prompt (\S\ref{sec:controls}).
+\item \emph{Human labels:} the judge-failure criterion ($\kappa<0.60$) was met in two models. The human-label test is an exact test on the judge-discordant stratum with a stratified bootstrap interval for the weighted shift, not the registered McNemar test on weighted counts, and a further 100 concordant pairs planned for this case were not labelled.
+\item \emph{Exploratory, uncorrected:} refusal of WildJailbreak's benign prompts (run with the development set), the complete-replies subset (\S\ref{sec:instrument}) and Llama Guard on the forced start were not registered.
+\item \emph{Registered and not reported here:} intervals for the risk ratios and the pooled shift, the depth interaction, the prefix-only baseline, the prefix-exclusion and turn-marker sensitivity outcomes, first-32-token identity and per-layer projection profiles. \qwenthree's forced cell was run through the mirror, two permuted and one Gaussian control as registered; all four are within 1.1\pp{} of bf16. The verdict on the three random draws registered first is the same (\N{C3.qwenforced.summary3.verdict}; \N{C3.llamafree.summary3.verdict}).
 \end{itemize}
 
 \paragraph{GPTQ.} \qwen's GPTQ build loses \N{cap.qwen.gptq.dnll} nats per token against bf16 (AWQ: \N{cap.qwen.awq.dnll}) and is excluded from every analysis. A build with 6-bit fallback layers (\N{cap.qwen.gptq6.bpw} bits per weight) is equally broken (\N{cap.qwen.gptq6.dnll}), so the failure lies in the GPTQ pass on this model. \llama's GPTQ build is sound (\N{cap.llama.gptq.dnll}) and is reported.
@@ -42,13 +45,13 @@ Nov 14 & other quantizers, dose, refusal direction, GGUF; six random draws; same
 
 At 4 bits, churn roughly doubles relative to 8 bits (\N{S6.qwen.4bit-g64.churn}\%, \N{S6.llama.4bit-g64.churn}\% and \N{S6.qwenthree.4bit-g64.churn}\% of forced-start prompts). Under sampling, two runs of the same bf16 weights disagree on \N{S7.qwen.floor}\% (\qwen) and \N{S7.llama.floor}\% (\llama) of prompts, and a bf16 run and a 4-bit run disagree on \N{S7.qwen.quant}\% and \N{S7.llama.quant}\%. The excess is \N{S7.qwen.diff}\pp{} \N{S7.qwen.ci} and \N{S7.llama.diff}\pp{} \N{S7.llama.ci}.
 
-Three sampled runs of each build give the per-prompt estimand directly: the per-prompt variance of the label, averaged over the \N{e3.qwen.n} prompts. For \llama{} the 4-bit build's variance (\N{e3.llama.varq}) barely exceeds bf16's (\N{e3.llama.varbf}); the excess is \N{e3.llama.excess} \N{e3.llama.ci}, so under a forced start its 4-bit build is, prompt by prompt, indistinguishable from another sample of the original. For \qwen{} the excess is \N{e3.qwen.excess} \N{e3.qwen.ci} (\N{e3.qwen.varq} against \N{e3.qwen.varbf}): its 4-bit build does not only shift the rate but also makes individual labels less stable.
+Three sampled runs of each build give the per-prompt estimand directly: the per-prompt variance of the label, averaged over the \N{e3.qwen.n} prompts. For \llama{} the 4-bit build's variance (\N{e3.llama.varq}) barely exceeds bf16's (\N{e3.llama.varbf}); the excess is \N{e3.llama.excess} \N{e3.llama.ci}, so quantization does not make its individual labels less stable; with the churn comparison above, its 4-bit build behaves under a forced start like another sample of the original. For \qwen{} the excess is \N{e3.qwen.excess} \N{e3.qwen.ci} (\N{e3.qwen.varq} against \N{e3.qwen.varbf}): its 4-bit build does not only shift the rate but also makes individual labels less stable.
 
 \section{Judge, labels and protocol}
 \label{app:judge}
 \paragraph{Templates and builds.} Qwen2.5's template adds its default system prompt; Llama's inserts the current date, which we pin. All builds use \texttt{mlx-lm} 0.32.2 on MLX 0.32.4. The mixed 4/6 recipe keeps the value and down projections at 6 bits in the first and last eighth of layers and in every third layer between them. AWQ and GPTQ are calibrated on 128 sequences of 512 tokens of \texttt{mlx-lm}'s default calibration text. GGUF files are converted with llama.cpp at a pinned commit, without an importance matrix, and served with prompts sent as token ids; the server's count of evaluated tokens is checked against the tokens sent.
 
-\paragraph{Judge.} The judge (Qwen2.5-14B-Instruct at 4 bits) labels each reply COMPLY, PARTIAL, NONE or INCOHERENT. Its answer is generated and parsed, and every label parsed. Chat-template control strings in requests and replies are neutralized before judging, because some MXFP4 replies contain them. Benign prompts are judged with an XSTest-style rubric (compliance, partial refusal, refusal), and partial or full refusal counts as refusal. The 128-token cap is checked at 384 tokens on a fixed random subset of 150 prompts.
+\paragraph{Judge.} The judge (Qwen2.5-14B-Instruct at 4 bits) labels each reply COMPLY, PARTIAL, NONE or INCOHERENT. Its answer is generated and parsed, and every label parsed. Chat-template control strings in requests and replies are neutralized before judging, because some MXFP4 replies contain them (Appendix~\ref{app:runon}). Benign prompts are judged with an XSTest-style rubric (compliance, partial refusal, refusal), and partial or full refusal counts as refusal. The 128-token cap is checked at 384 tokens on a fixed random subset of 150 prompts.
 
 \paragraph{Human labels.} For each model, every forced-start prompt falls into one of three strata by the judge's labels on its two replies: D, the judge splits the pair; P, it calls both harmful; N, it calls neither. All of D and 25 random pairs from each of P and N were labelled (Table~\ref{tab:strata}), \N{human.totalpairs} pairs and \N{human.totalreplies} replies in all. Each pair was shown on one page with the request, the prefix and the two replies in random order as A and B, with no indication of format or judge label, and each reply was labelled with the judge's four categories. Rates, agreement, $\kappa$, PPV and NPV are design-weighted: each labelled pair counts for its stratum's population divided by its sample size, so the estimates refer to all 562 prompts and not to the enriched sample. Net shifts are point estimates from this weighting; their interval comes from a stratified bootstrap over labelled pairs.
 
@@ -92,7 +95,7 @@ Each family is Holm-corrected within itself. Rates are percentages of prompts; `
 \begin{table*}[t]
 \centering\small
 \input{generated/tab_benign}
-\caption{Refusal on benign prompts (partial or full refusal). A positive shift is more refusal at the build. No multiplicity correction.}
+\caption{Refusal on benign prompts (partial or full refusal). A positive shift is more refusal at the build. Holm $p$ is over the six registered XSTest cells; the WJB benign cells were not registered and are uncorrected.}
 \label{tab:benignfull}
 \end{table*}
 
@@ -114,7 +117,7 @@ Before any judged run, the dense $W + E$ build had to match the real 4-bit build
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figures/controls.pdf}
-\caption{Every control build in each cell with a shift, as a shift against bf16 with a 95\% interval, beside AWQ and llama.cpp's Q4\_K\_M. Filled markers are confirmatory tests; the panel title gives the verdict of the decision rule in \S\ref{sec:controls}.}
+\caption{The mirror and the six random controls in each cell with a shift, as a shift against bf16 with a 95\% interval, beside AWQ and llama.cpp's Q4\_K\_M (the latter against its own bf16). Filled markers are confirmatory tests; the panel title gives the verdict of the decision rule in \S\ref{sec:controls}.}
 \label{fig:controls}
 \end{figure*}
 
@@ -136,7 +139,7 @@ Before any judged run, the dense $W + E$ build had to match the real 4-bit build
 
 \section{Free-start development set}
 \label{app:pilot}
-The first 200 WildJailbreak prompts form the development set (Table~\ref{tab:pilot}); the free-start test uses the 400 held-out prompts. \llama's 4-bit build was \N{pilot.llama.4bit-g64.diff}\pp{} against bf16 and \qwenthree's \N{pilot.qwenthree.4bit-g64.diff}\pp. On the held-out prompts the first holds and the second does not (\S\ref{sec:free}).
+The first 200 WildJailbreak prompts form the development set (Table~\ref{tab:pilot}); the free-start test uses the 400 held-out prompts. \llama's 4-bit build was \N{pilot.llama.4bit-g64.diff}\pp{} against bf16 and \qwenthree's \N{pilot.qwenthree.4bit-g64.diff}\pp. On the held-out prompts the first holds and the second shrinks (\S\ref{sec:free}).
 
 \begin{table*}[t]
 \centering\small
@@ -160,6 +163,6 @@ MXFP4 \qwen{} sometimes fails to end its turn and writes a fabricated next user 
 \label{app:compute}
 All runs used one Apple M2 Pro with 16\,GB of memory, \texttt{mlx} 0.32.4 and \texttt{mlx-lm} 0.32.2, with one model in memory at a time. The logged experiment runs took about \N{compute.hours} hours over \N{compute.steps} steps, building, generating and judging; this excludes development. The bf16 checkpoints are identified by the first twelve hex digits of the SHA-256 over their weight files: \qwen{} \texttt{\N{hash.qwen}}, \llama{} \texttt{\N{hash.llama}}, \qwenthree{} \texttt{\N{hash.qwenthree}}.
 
-We release the code, the pre-registration, the prompt identifiers, every judge and human label, the perturbation builder and the analysis that produces every number in this paper. We do not release the replies themselves, which include harmful content produced under a forced start; they are available to researchers on request.
+We release the code, the pre-registration, every judge and human label keyed by prompt index, the aggregate results, the perturbation builder and the analysis code, at \url{https://github.com/egekaya1/qrefusal}. The analysis reads the raw result files, which contain the replies; we do not release those, because they include harmful content produced under a forced start, and they are available to researchers on request.
 
 \paragraph{Use of AI assistants.} AI assistants were used for coding, literature search and editing of the text. The author takes full responsibility for the content.

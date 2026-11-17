@@ -14,10 +14,8 @@ until grep -q "extend2 done" logs/extend2.log 2>/dev/null && ! pgrep -f "scripts
 log "extend3 start"
 
 # --- 1. GPTQ rebuild -------------------------------------------------------------------
-# The Nov 14 build passed --fallback-bits 4, crushing every non-GPTQ layer (embeddings and
-# lm_head included) to 4 bits with no calibration; it lost ~9.3 nats/token. mlx_lm's default
-# fallback is 6 bits. Built under a NEW name so the failed build's numbers stay reproducible
-# for the deviations appendix.
+# The registered build (4-bit fallback layers) lost about 9.3 nats per token. This rebuild with
+# mlx_lm's default 6-bit fallback tests whether the fallback is the cause (it is not; Appendix A).
 [ -d models/qwen2.5-3b-gptq6 ] || run "gptq6 build" \
   mlx_lm.gptq --model models/qwen2.5-3b-bf16 --mlx-path models/qwen2.5-3b-gptq6 \
   --bits 4 --group-size 64 --num-samples 128 --sequence-length 512

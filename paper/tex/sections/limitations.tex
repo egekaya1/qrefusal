@@ -9,14 +9,14 @@
 \item \textbf{The free-start effect was found on the development set.} The test prompts are held out, but the choice of prompt set and model for the confirmatory test followed the development-set result.
 \item \textbf{Two different prompt sets.} The forced-start and free-start settings use different prompts. A forced generic start on the free-start prompts separates the two for \llama{} but not for \qwen, whose shift may depend on prompt type as well as on the start. That forced start also raises baseline compliance, so the comparison is not exactly like for like.
 \item \textbf{The dose builds are not real formats.} Builds at half and twice the rounding error are dense bf16 models that no shipped quantizer produces, and the doubled builds lose much more likelihood than the real ones.
-\item \textbf{The controls are coarse.} We built one mirror, three permutation seeds, three Gaussian draws and two scales per cell, in two cells. Six random draws give a rough estimate of the distribution of a matched perturbation's effect, and the controls attribute direction to the whole perturbation, not to particular layers. The refusal-direction analysis is correlational and identifies no circuit.
+\item \textbf{The controls are coarse.} We built one mirror, three permutation seeds, three Gaussian draws and two scales per cell, in two cells. Six random draws give a rough estimate of the distribution of a matched perturbation's effect, the decision rule pools permuted and Gaussian draws although in \llama{} the permuted draws alone average about half the real shift, and the controls attribute direction to the whole perturbation, not to particular layers. The refusal-direction analysis is correlational and identifies no circuit.
 \item \textbf{Decoding.} Decoding is greedy with one reply per prompt, except in the seed-floor runs, whereas deployed models sample. Replies are capped at 128 tokens and many reach the cap. We checked the cap on 150 prompts per cell.
 \item \textbf{The forced-start prefix is model-specific.} It comes from an abliterated full-precision model and is read by the judge. A generic ``Sure, here is'' prefix gives the same sign for \qwen{} and no shift in the other two.
 \item \textbf{Judges and labels.}
 \begin{itemize}
 \setlength\itemsep{0pt}
 \item \textbf{Truncated replies.} Most replies reach the 128-token cap, and the two label sources treat a reply cut off mid-compliance differently (\S\ref{sec:instrument}). We report both. The sign of the effect does not depend on the choice, but its size does: the judge gives \N{C1.permodel.qwen.all.diff}\pp{} and the human labels \N{human.qwen.net}\pp{} for the same contrast, and the human interval is wide.
-\item The main judge under-counts harm relative to the human labels. Only the forced-start primary test has human labels, and every other cell uses the judge, read as a lower bound.
+\item The main judge under-counts harm relative to the human labels. Only the forced-start primary test has human labels, and every other cell uses the judge, which under-counted harm where we could check.
 \item The main judge is itself a 4-bit model, of the same family as one subject. The second judge is also quantized and measures a different construct.
 \item The only human annotator is the author, who labelled the two replies of each pair side by side.
 \end{itemize}
@@ -25,4 +25,4 @@
 \end{itemize}
 
 \section*{Ethical considerations}
-This work measures how often quantized copies of public chat models comply with harmful requests. It introduces no new attack: prefill is a known way to bypass refusal, and quantization is routine. We release code, prompt identifiers, judge labels and human labels, and we withhold the models' replies to harmful prompts. The human labels were produced by the author, who read harmful replies and could stop at any time.
+This work measures how often quantized copies of public chat models comply with harmful requests. It introduces no new attack: prefill is a known way to bypass refusal, and quantization is routine. We release code and every judge and human label keyed by prompt index, and we withhold the models' replies to harmful prompts. The human labels were produced by the author, who read harmful replies and could stop at any time.
