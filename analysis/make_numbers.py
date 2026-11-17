@@ -985,7 +985,10 @@ def appendix_tables():
             continue
         meta = json.loads(bj.read_text())
         real_gap = next(iter(meta.values()))["real_nll_gap"]
-        body.append(f"{tag} & real 4-bit & {real_gap:+.3f} & -- & {_pp(C3[tag]['real']['diff'])} {_ci(C3[tag]['real']['ci95'])} \\\\")
+        real = C3[tag]['real']
+        if tag == "Llama free":  # same contrast as the main text; take its interval so the two match
+            real = OUT["C2"]["cells"]["llama3.2-3b"]["4bit-g64"]
+        body.append(f"{tag} & real 4-bit & {real_gap:+.3f} & -- & {_pp(real['diff'])} {_ci(real['ci95'])} \\\\")
         for b in ("e2-dense", "e2-mirror", "e2-perm1", "e2-perm2", "e2-perm3", "e2-gauss", "e2-gauss2", "e2-gauss3", "e2-scale0.5", "e2-scale2"):
             if b not in meta:
                 continue
