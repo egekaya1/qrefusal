@@ -4,7 +4,7 @@
 
 Code and analysis for a pre-registered audit of how 4-bit quantization changes the refusals of small chat models, with controls that ask whether a change comes from quantization or would follow from any perturbation of the same size.
 
-Preprint forthcoming (November 2026).
+Paper: [arXiv:2611.22186](https://arxiv.org/abs/2611.22186)
 
 ## What this is about
 
@@ -88,4 +88,11 @@ Code: MIT (`LICENSE`). Labels and paper text: CC BY 4.0. `paper/tex/acl.sty` and
 
 ## Citation
 
-Forthcoming with the preprint.
+```bibtex
+@article{kaya2026quantization,
+  title={Is 4-Bit Quantization More Than Noise to a Chat Model's Safety Behaviour? Attributing Behavioural Shifts with Matched Perturbations},
+  author={Kaya, Ege},
+  journal={arXiv preprint arXiv:2611.22186},
+  year={2026}
+}
+```
